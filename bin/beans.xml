@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+        
+        <!-- 开启spring的annotation支持 -->
+        <context:annotation-config/>
+        <!-- 指定spring去哪些包找，如：base-package="com.hx.spring"表示自动在com.hx.spring下扫描所有的类 -->
+        <context:component-scan base-package="com.hx.spring"/>
+        <!-- aop的配置 -->
+        <aop:config>
+        	<!--定义切面  ref="logAspect",logAspect是切面类Component的值 -->
+        	<aop:aspect id="myLog" ref="logAspect">
+        		<!-- 在哪些类我们叫做pointcut,也就是在哪些位置加入相应的Aspect -->
+        		<aop:pointcut expression="execution(* com.hx.spring.dao.*.add*(..)) ||
+        		execution(* com.hx.spring.dao.*.delete*(..))" id="logPointCut"/>
+        		<!-- method是类对应的方法 pointcut-ref 引入哪个pointcut -->
+        		<aop:before method="logStart" pointcut-ref="logPointCut"/>
+        		<aop:after method="logEnd" pointcut-ref="logPointCut"/>
+        		<aop:around method="logAround" pointcut-ref="logPointCut"/>
+        	</aop:aspect>
+        </aop:config>
+</beans>
